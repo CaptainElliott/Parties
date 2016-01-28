@@ -1,0 +1,22 @@
+permissions:
+  owner:
+    - party.create
+    - party.disband
+    - party.invite
+    - party.invite.cancel
+    - party.invite.send
+    - party.invite.accept
+    - party.invite.decline
+    - party.remove
+    - party.promote
+    - party.leave
+    - party.chat
+    - party.chat.send
+    - party.chat.receive
+  member:
+    - party.invite.accept
+    - party.invite.decline
+    - party.leave
+    - party.chat
+    - party.chat.send
+    - party.chat.recieve
