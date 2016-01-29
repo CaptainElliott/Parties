@@ -1,10 +1,12 @@
 package me.itselliott.partymanager.party;
 
+import com.google.common.base.Preconditions;
 import me.itselliott.partymanager.PartyPlugin;
 import me.itselliott.partymanager.party.channel.Channel;
 import me.itselliott.partymanager.party.membership.Member;
 import me.itselliott.partymanager.party.membership.Membership;
 import me.itselliott.partymanager.party.membership.Owner;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
@@ -43,7 +45,8 @@ public class Party implements IParty {
     @Override
     public boolean hasMember(Player player) {
         for (Membership member : this.getMembers()) {
-           return member.getPlayer().equals(player) && member instanceof Member;
+           if (member.getPlayer().equals(player) && member instanceof Member)
+               return true;
         }
         return false;
     }
@@ -51,7 +54,8 @@ public class Party implements IParty {
     @Override
     public boolean hasPlayer(Player player) {
         for (Membership member : this.players) {
-            return member.getPlayer().equals(player);
+            if (member.getPlayer().equals(player))
+                return true;
         }
         return false;
     }
@@ -78,6 +82,7 @@ public class Party implements IParty {
             for (Membership membership : this.players) {
                 if (membership.getPlayer().equals(player) && membership instanceof Owner) {
                     this.players.remove(membership);
+                    this.channel.removePlayer(membership.getPlayer().getUniqueId());
                     this.players.add(new Member(player));
                 }
             }
@@ -113,8 +118,8 @@ public class Party implements IParty {
 
     @Override
     public boolean hasInvitation(Player player) {
-       if (this.pending.contains(player.getUniqueId()))
-           return true;
+        if (this.pending.contains(player.getUniqueId()))
+            return true;
         return false;
     }
 
@@ -122,6 +127,7 @@ public class Party implements IParty {
     public void acceptInvitation(Player player) {
         if (this.hasInvitation(player)) {
             this.addPlayer(player);
+            this.channel.addPlayer(player.getUniqueId());
             this.cancelInvitation(player);
         }
     }
@@ -130,8 +136,10 @@ public class Party implements IParty {
     public void removePlayer(Player player) {
         if (this.hasPlayer(player)) {
             for (Membership membership : this.players) {
-                if (membership.getPlayer().equals(player))
+                if (membership.getPlayer().equals(player)) {
                     this.players.remove(membership);
+                    this.channel.removePlayer(membership.getPlayer().getUniqueId());
+                }
             }
         }
     }
@@ -147,7 +155,7 @@ public class Party implements IParty {
 
     @Override
     public void setMembership(Player player, Class<? extends Membership> membership) {
-        if (this.hasPlayer(player) || (this.hasOwner(player) && this.getOwners().size() > 1)) {
+        if (this.hasPlayer(player) || (membership.equals(Member.class) && this.getOwners().size() > 1)) {
             this.removePlayer(player);
             try {
                 this.players.add(membership.getDeclaredConstructor(Player.class).newInstance(player));

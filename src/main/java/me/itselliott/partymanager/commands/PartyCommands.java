@@ -32,7 +32,7 @@ public class PartyCommands {
     @Command(aliases = "create", desc = "Create a brand new party!", max = 0 )
     public static void create(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player player = ((Player) sender).getPlayer();
             if (player.hasPermission(Permissions.CREATE.getPermission())) {
                 PartyManager partyManager = PartyPlugin.get().getPartyManager();
                 if (!partyManager.getParties().hasParty(player)) {
@@ -46,7 +46,7 @@ public class PartyCommands {
     @Command(aliases = "disband", desc = "Disband your party, removes everyone else and destroys party", max = 0)
     public static void disband(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player player = ((Player) sender).getPlayer();
             if (player.hasPermission(Permissions.DISBAND.getPermission())) {
                 PartyManager partyManager = PartyPlugin.get().getPartyManager();
                 if (partyManager.getParties().hasParty(player)) {
@@ -60,7 +60,7 @@ public class PartyCommands {
     @Command(aliases = "invite", desc = "Sends an invitation for a player to join your party", usage = "[player] - The player to request to join party", min = 1, max = 1)
     public static void invite(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
-            final Player player = (Player) sender;
+            final  Player player = ((Player) sender).getPlayer();
             if (player.hasPermission(Permissions.INVITE_SEND.getPermission())) {
                 final Player target = Bukkit.getPlayer(args.getString(0));
                 PartyManager partyManager = PartyPlugin.get().getPartyManager();
@@ -76,7 +76,7 @@ public class PartyCommands {
     @Command(aliases = "accept", desc = "Accepts a pending party invitation", max = 1)
     public static void accept(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player player = ((Player) sender).getPlayer();
             if (player.hasPermission(Permissions.INVITE_ACCEPT.getPermission())) {
                 PartyManager partyManager = PartyPlugin.get().getPartyManager();
                 if (args.argsLength() > 0 && partyManager.getParties().isParty(UUID.fromString(args.getString(0)))) {
@@ -99,7 +99,7 @@ public class PartyCommands {
     @Command(aliases = "decline", desc = "Declines a pending party invitation", max = 1)
     public static void decline(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player player = ((Player) sender).getPlayer();
             if (player.hasPermission(Permissions.INVITE_DECLINE.getPermission())) {
                 PartyManager partyManager = PartyPlugin.get().getPartyManager();
                 if (args.argsLength() > 0 && partyManager.getParties().isParty(UUID.fromString(args.getString(0)))) {
@@ -122,7 +122,7 @@ public class PartyCommands {
     @Command(aliases = "leave", desc = "Leave the current party you are in", max = 1)
     public static void leave(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player player = ((Player) sender).getPlayer();
             if (player.hasPermission(Permissions.LEAVE.getPermission())) {
                 PartyManager partyManager = PartyPlugin.get().getPartyManager();
                 if (partyManager.getParties().hasParty(player)) {
@@ -140,7 +140,7 @@ public class PartyCommands {
     @Command(aliases = {"kick", "remove"}, desc = "Remove someone from your party", min = 1, max = 1)
     public static void kick(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player player = ((Player) sender).getPlayer();
             if (player.hasPermission(Permissions.REMOVE.getPermission())) {
                 Player target = Bukkit.getPlayer(args.getString(0));
                 Party party = PartyPlugin.get().getPartyManager().getParties().getParty(player);
@@ -154,7 +154,7 @@ public class PartyCommands {
     @Command(aliases = {"info", "information"}, desc = "List information about your current party, or specified party", max = 0)
     public static void info(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player player = ((Player) sender).getPlayer();
             PartyManager partyManager = PartyPlugin.get().getPartyManager();
             if (partyManager.getParties().hasParty(player)) {
                 Party party = partyManager.getParties().getParty(player);
@@ -196,7 +196,7 @@ public class PartyCommands {
     @Command(aliases = {"teleport", "tp", "bring", "warp"}, desc = "Bring all members of your party to your location", max = 0)
     public static void warp(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            Player player = ((Player) sender).getPlayer();
             PartyManager partyManager = PartyPlugin.get().getPartyManager();
             if (partyManager.getParties().hasParty(player) && player.hasPermission(Permissions.WARP.getPermission())) {
                 Party party = partyManager.getParties().getParty(player);
@@ -208,6 +208,22 @@ public class PartyCommands {
                 }
                 Bukkit.getPluginManager().callEvent(new PartyWarpEvent(party, player, players));
             } else throw new CommandPermissionsException();
+        }
+    }
+
+    @Command(aliases = "promote", desc = "Add a player as an owner", min = 1)
+        public static void promote(final CommandContext args, CommandSender sender) throws CommandException {
+        if (sender instanceof Player && args.argsLength() > 0) {
+            Player player = ((Player) sender).getPlayer();
+            PartyManager partyManager = PartyPlugin.get().getPartyManager();
+            if (player.hasPermission(Permissions.PROMOTE.getPermission())) {
+                Player target = Bukkit.getPlayer(args.getString(0));
+                if (partyManager.getParties().isParty(target.getUniqueId())) {
+                    Party party = partyManager.getParties().getParty(target.getUniqueId());
+                    if (!party.hasOwner(target))
+                        party.setMembership(target, Owner.class);
+                }
+            }
         }
     }
 }

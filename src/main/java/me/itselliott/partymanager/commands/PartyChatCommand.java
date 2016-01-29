@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
  */
 public class PartyChatCommand {
 
-    @Command(aliases = {"partychat", "pc", "p"}, desc = "Talk to your party members!")
+    @Command(aliases = {"partychat", "pc", "p"}, desc = "Talk to your party members!", min = 1)
     public static void partyChat(final CommandContext args, CommandSender sender) throws CommandException {
         if (sender instanceof Player) {
             Player player = (Player) sender;

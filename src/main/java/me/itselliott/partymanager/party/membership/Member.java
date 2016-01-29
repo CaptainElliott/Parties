@@ -18,14 +18,14 @@ public class Member implements Membership {
     public PermissionAttachment permissionAttachment;
 
     public Member(Player player) {
-        this.player = player;
-        this.permissions = PartyPlugin.get().getConfiguration().getPermissions("member");
-        this.permissionAttachment = player.addAttachment(PartyPlugin.get());
+        this(player, PartyPlugin.get().getConfiguration().getPermissions("member"));
     }
 
     protected Member(Player player, List<String> permissions) {
         this.player = player;
         this.permissions = permissions;
+        this.permissionAttachment = player.addAttachment(PartyPlugin.get());
+        this.setPermissions();
     }
 
 
@@ -49,6 +49,13 @@ public class Member implements Membership {
     public void removePermission(String string) {
         this.permissions.remove(string);
         this.permissionAttachment.setPermission(string, false);
+    }
+
+    @Override
+    public void setPermissions() {
+        for (String permission : this.permissions) {
+            this.permissionAttachment.setPermission(permission, true);
+        }
     }
 
 }

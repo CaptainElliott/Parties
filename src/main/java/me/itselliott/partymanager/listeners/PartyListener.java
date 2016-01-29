@@ -5,8 +5,10 @@ import me.itselliott.partymanager.events.*;
 import me.itselliott.partymanager.events.partyChat.PartyChatReceiveEvent;
 import me.itselliott.partymanager.events.partyChat.PartyChatSendEvent;
 import me.itselliott.partymanager.party.Party;
+import me.itselliott.partymanager.party.membership.Owner;
 import me.itselliott.partymanager.util.ChatUtil;
 import me.itselliott.partymanager.util.Time;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -45,7 +47,8 @@ public class PartyListener implements Listener {
         /* Send target player messages */
         target.sendMessage(ChatColor.GREEN + player.getDisplayName() + " has send you an invitation to join their party!");
         ChatUtil.sendBlankLine(target);
-        target.sendMessage("        " + ChatUtil.sendCommandClick(target, ChatColor.GREEN + "" + ChatColor.BOLD + "[ACCEPT]", "party accept " + party.getId()) + ChatUtil.sendCommandClick(target, ChatColor.RED + "" + ChatColor.BOLD + "[DECLINE]", "party decline " + party.getId()));
+        target.sendMessage(ChatUtil.sendCommandClick(target, ChatColor.GREEN + "" + ChatColor.BOLD + "[ACCEPT]", "/party accept " + party.getId()));
+        target.sendMessage(ChatUtil.sendCommandClick(target, ChatColor.RED + "" + ChatColor.BOLD + "[DECLINE]", "/party decline " + party.getId()));
         ChatUtil.sendBlankLine(target);
         /* Invitation expiration */
         Bukkit.getScheduler().scheduleSyncDelayedTask(PartyPlugin.get(), new BukkitRunnable() {
@@ -64,7 +67,7 @@ public class PartyListener implements Listener {
     @EventHandler
     public void onCreateParyEvent(CreatePartyEvent event) {
         PartyPlugin.get().getPartyManager().registerParty(event.getParty());
-        event.getPlayer().sendMessage(ChatColor.GREEN + "You created your party, invite players using /invite <username>");
+        event.getPlayer().sendMessage(ChatColor.GREEN + "You created your party, invite players using /party invite <username>");
     }
 
     @EventHandler
@@ -102,6 +105,13 @@ public class PartyListener implements Listener {
     @EventHandler
     public void onPlayerReceivePartyChatEvent(PartyChatReceiveEvent event) {
         event.getRecipiant().sendMessage(String.format(event.getChannel().getFormat(), event.getSender().getDisplayName(), event.getMessage()));
+    }
+
+    @EventHandler
+    public void onPlayerPromote(PartyPromoteEvent event) {
+        event.getParty().setMembership(event.getPlayer(), Owner.class);
+        event.getParty().getChannel().sendBroadcast(ChatColor.GOLD + event.getPlayer().getDisplayName() + " Has been promoted!");
+        event.getPlayer().sendMessage(ChatColor.GOLD + "You have been promoted!");
     }
 
 }

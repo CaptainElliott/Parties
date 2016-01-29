@@ -2,6 +2,7 @@ package me.itselliott.partymanager;
 
 import me.itselliott.partymanager.party.Party;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Elliott2 on 26/01/2016.

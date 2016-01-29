@@ -18,6 +18,7 @@ public class PartyAcceptEvent extends PartyEvent {
      */
     public PartyAcceptEvent(Party party, Player player) {
         super(party);
+        this.player = player;
     }
 
     public Player getPlayer() {

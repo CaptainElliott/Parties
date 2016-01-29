@@ -4,12 +4,13 @@ import me.itselliott.partymanager.party.Party;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
  * Created by Elliott2 on 28/01/2016.
  */
-public class PartyCollection<P extends Party> extends ArrayList<P> {
+public class PartyCollection<P extends Party> extends HashSet<P> {
 
     public PartyCollection() {
 
