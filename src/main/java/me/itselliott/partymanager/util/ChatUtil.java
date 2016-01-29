@@ -1,9 +1,9 @@
 package me.itselliott.partymanager.util;
 
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
@@ -11,8 +11,12 @@ import org.bukkit.entity.Player;
  */
 public class ChatUtil {
 
-    public static void sendBlankLine(Player player) {
-        player.sendMessage("\n");
+    public static void sendBlankLine(CommandSender sender) {
+        sender.sendMessage("\n");
+    }
+
+    public static void sendLine(CommandSender sender) {
+        sender.sendMessage(ChatColor.STRIKETHROUGH + "-----------------------------------------------");
     }
 
     public static TextComponent sendCommandClick(Player player, String string, String command) {

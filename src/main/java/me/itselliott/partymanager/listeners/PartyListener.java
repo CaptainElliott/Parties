@@ -74,4 +74,12 @@ public class PartyListener implements Listener {
         event.getParty().getChannel().sendBroadcast(ChatColor.BOLD + "" + ChatColor.DARK_RED + "Party has been disbanded as the only owner left");
         event.getParty().disband();
     }
+
+    @EventHandler
+    public void onPartyKickEvet(PartyKickEvent event) {
+        event.getParty().removePlayer(event.getPlayer());
+        event.getParty().getChannel().sendBroadcast(ChatColor.RED + event.getPlayer().getDisplayName() + " Has been removed from your party");
+        event.getPlayer().sendMessage(ChatColor.RED + "You have been removed from the party!");
+    }
+
 }

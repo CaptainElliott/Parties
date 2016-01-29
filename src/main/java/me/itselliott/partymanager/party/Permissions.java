@@ -1,5 +1,8 @@
 package me.itselliott.partymanager.party;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Elliott2 on 28/01/2016.
  */
@@ -27,5 +30,13 @@ public enum Permissions {
 
     public String getPermission() {
         return this.permission;
+    }
+
+    public static Set<String> getPermissions() {
+        Set<String> permissions = new HashSet<>();
+        for (Permissions permission : Permissions.values()) {
+            permissions.add(permission.getPermission());
+        }
+        return permissions;
     }
 }

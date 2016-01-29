@@ -95,7 +95,7 @@ public class Party implements IParty {
     public Set<Member> getMembers() {
         Set<Member> members = new HashSet<Member>();
         for (Membership member : this.players) {
-            if (member instanceof Member)
+            if (member instanceof Member && !(member instanceof Owner))
                 members.add((Member)member);
         }
         return members;

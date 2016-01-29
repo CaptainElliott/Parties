@@ -19,4 +19,4 @@ permissions:
     - party.leave
     - party.chat
     - party.chat.send
-    - party.chat.recieve
+    - party.chat.receive
