@@ -20,7 +20,8 @@ public enum Permissions {
     LEAVE("party.leave"),
     CHAT("party.chat"),
     CHAT_SEND("party.chat.send"),
-    CHAT_RECEIVE("party.chat.receive");
+    CHAT_RECEIVE("party.chat.receive"),
+    WARP("party.warp");
 
     private String permission;
 

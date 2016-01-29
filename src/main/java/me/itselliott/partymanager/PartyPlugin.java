@@ -2,6 +2,7 @@ package me.itselliott.partymanager;
 
 import com.sk89q.bukkit.util.CommandsManagerRegistration;
 import com.sk89q.minecraft.util.commands.*;
+import me.itselliott.partymanager.commands.PartyChatCommand;
 import me.itselliott.partymanager.commands.PartyParentCommand;
 import me.itselliott.partymanager.config.Config;
 import me.itselliott.partymanager.listeners.PartyListener;
@@ -50,6 +51,7 @@ public class PartyPlugin extends JavaPlugin {
         };
         CommandsManagerRegistration cmdRegister = new CommandsManagerRegistration(this, this.commands);
         cmdRegister.register(PartyParentCommand.class);
+        cmdRegister.register(PartyChatCommand.class);
 
     }
 

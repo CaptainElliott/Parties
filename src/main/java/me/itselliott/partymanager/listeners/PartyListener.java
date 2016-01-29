@@ -2,6 +2,8 @@ package me.itselliott.partymanager.listeners;
 
 import me.itselliott.partymanager.PartyPlugin;
 import me.itselliott.partymanager.events.*;
+import me.itselliott.partymanager.events.partyChat.PartyChatReceiveEvent;
+import me.itselliott.partymanager.events.partyChat.PartyChatSendEvent;
 import me.itselliott.partymanager.party.Party;
 import me.itselliott.partymanager.util.ChatUtil;
 import me.itselliott.partymanager.util.Time;
@@ -11,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.UUID;
 
 /**
  * Created by Elliott2 on 28/01/2016.
@@ -80,6 +84,24 @@ public class PartyListener implements Listener {
         event.getParty().removePlayer(event.getPlayer());
         event.getParty().getChannel().sendBroadcast(ChatColor.RED + event.getPlayer().getDisplayName() + " Has been removed from your party");
         event.getPlayer().sendMessage(ChatColor.RED + "You have been removed from the party!");
+    }
+
+    @EventHandler
+    public void onPartyWarp(PartyWarpEvent event) {
+        for (UUID player : event.getPlayers()) {
+            Bukkit.getPlayer(player).teleport(event.getTarget());
+        }
+        event.getParty().getChannel().sendBroadcast(ChatColor.GREEN + "You have been warped to " + ChatColor.GOLD + event.getTarget().getDisplayName());
+    }
+
+    @EventHandler
+    public void onPlayerSendPartyChatMessage(PartyChatSendEvent event) {
+        event.getChannel().sendMessage(event.getSender(), event.getMessage());
+    }
+
+    @EventHandler
+    public void onPlayerReceivePartyChatEvent(PartyChatReceiveEvent event) {
+        event.getRecipiant().sendMessage(String.format(event.getChannel().getFormat(), event.getSender().getDisplayName(), event.getMessage()));
     }
 
 }

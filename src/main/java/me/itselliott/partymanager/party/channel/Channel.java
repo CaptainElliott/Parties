@@ -1,5 +1,6 @@
 package me.itselliott.partymanager.party.channel;
 
+import me.itselliott.partymanager.party.Party;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -10,6 +11,13 @@ import java.util.UUID;
  * Created by Elliott2 on 26/01/2016.
  */
 public interface Channel {
+
+    /**
+     * Gets the party that the channel is associated with
+     *
+     * @return {@link Party}
+     */
+    public Party getParty();
 
     /**
      * Gets the format for the message sent

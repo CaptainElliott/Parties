@@ -12,6 +12,7 @@ import me.itselliott.partymanager.party.Party;
 import me.itselliott.partymanager.party.Permissions;
 import me.itselliott.partymanager.party.channel.PartyChannel;
 import me.itselliott.partymanager.party.membership.Member;
+import me.itselliott.partymanager.party.membership.Membership;
 import me.itselliott.partymanager.party.membership.Owner;
 import me.itselliott.partymanager.util.ChatUtil;
 import org.bukkit.Bukkit;
@@ -19,6 +20,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -33,7 +36,7 @@ public class PartyCommands {
             if (player.hasPermission(Permissions.CREATE.getPermission())) {
                 PartyManager partyManager = PartyPlugin.get().getPartyManager();
                 if (!partyManager.getParties().hasParty(player)) {
-                    Party party = new Party(new Owner(player), new PartyChannel(ChatColor.DARK_PURPLE + "[P] " + ChatColor.RESET + "%p: " + ChatColor.WHITE + "%m", player.getUniqueId()));
+                    Party party = new Party(new Owner(player), new PartyChannel(ChatColor.DARK_PURPLE + "[P] " + ChatColor.GOLD + "%s: " + ChatColor.GRAY + "%s", player.getUniqueId()));
                     Bukkit.getPluginManager().callEvent(new CreatePartyEvent(party, player));
                 } else throw new CommandException("You are already in a plugin, you must leave to create your own");
             } else throw new CommandPermissionsException();
@@ -166,6 +169,7 @@ public class PartyCommands {
                 ChatUtil.sendLine(player);
                 player.sendMessage(ChatColor.GOLD + owners.toString());
                 player.sendMessage(ChatColor.GREEN + members.toString());
+                ChatUtil.sendLine(player);
             } else throw new CommandException("You are not in a party!");
         }
     }
@@ -183,9 +187,27 @@ public class PartyCommands {
                 }
                 ChatUtil.sendLine(sender);
                 sender.sendMessage(owners.toString());
+                ChatUtil.sendLine(sender);
                 i++;
             }
         } else throw new CommandException("There are no parties currently in use");
     }
 
+    @Command(aliases = {"teleport", "tp", "bring", "warp"}, desc = "Bring all members of your party to your location", max = 0)
+    public static void warp(final CommandContext args, CommandSender sender) throws CommandException {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            PartyManager partyManager = PartyPlugin.get().getPartyManager();
+            if (partyManager.getParties().hasParty(player) && player.hasPermission(Permissions.WARP.getPermission())) {
+                Party party = partyManager.getParties().getParty(player);
+                Set<UUID> players = new HashSet<>();
+                for (Membership member : party.getPlayers()) {
+                    if (!member.getPlayer().equals(player)) {
+                        players.add(member.getPlayer().getUniqueId());
+                    }
+                }
+                Bukkit.getPluginManager().callEvent(new PartyWarpEvent(party, player, players));
+            } else throw new CommandPermissionsException();
+        }
+    }
 }
